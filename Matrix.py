@@ -53,7 +53,6 @@ class Matrix():
         return True
     def row_refrence(self, j, n):
         """
-
         :param j: column
         :param n: starting row position
         :return: first non zero element after n
@@ -111,7 +110,6 @@ class Matrix():
 
     def ref(self, steps =False, countR = 0):
         """
-
         :param steps: if True, then the program shows the steps
         :param countR: the number of iterations
         :return: the equivalence of A in Row Echelon Form
@@ -174,7 +172,10 @@ class Matrix():
     def rref(self, steps=False):
         self = Matrix(self.ref(steps))
         counter = self.rank-1  #the indexes of non zero rows 
-        column_list = self.non_zero_columns()
+
+        column_list = self.non_zero_columns() #a list of nonzero columns 
+        for i in range(self.row- self.rank):
+            column_list.pop()        
         column_list.reverse()
         for column in column_list:
              
@@ -198,6 +199,13 @@ class Matrix():
             if iszerovec(row):
                 counter -=1
         return counter
+    @property
+    def transpose(self):
+        if isinstance(self[0],list):
+            Atranspose = [[A[j][i] for j in range(len(A))]for i in range(len(A[0]))]
+        else:
+            Atranspose = [[x]for x in A]
+        return Matrix(Atranspose)
 
     def __len__(self):
         return len(self.rows)
@@ -243,4 +251,33 @@ def firstNonZeroElement(v):
     for element in v:
         if element != 0:
             return element
+
+def vecmul(v, u):
+    if len(v) != len(u):
+        print("The vectors cannot be multiplied")
+        return 
+    else:
+        vu = [i*j for i,j in zip(v, u)]
+        return sum(vu)
+def matrixMul(A, B):
+    
+    entries = []
+    AB = []
+    if A.row == B.col:
+        for row in range(A.row):
+            for col in range(B.col):
+
+                entry = vecmul(A[row], B.sp_col(col))
+                entries.append(entry)
+            AB.insert(row, entries)
+            entries = []
+
+        return Matrix(AB)
+
+    else:
+        print("The matrices cannot be multiplied")
+        return 
+
+
+
 
